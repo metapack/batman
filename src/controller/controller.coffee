@@ -1,8 +1,6 @@
 #= require ./render_cache
 
 class Batman.Controller extends Batman.Object
-  @singleton 'sharedController'
-
   @wrapAccessor 'routingKey', (core) ->
     get: ->
       if @routingKey?
