@@ -94,9 +94,3 @@ test "@wrapAccessor can be given a wrapper object for specific keys", ->
   example.set('baz', 1)
   equal example.baz, 1
   equal example.get('baz'), 1
-
-test "@singleton creates a singleton", ->
-  class Thing extends Batman.Object
-    @singleton 'sharedThing'
-
-  strictEqual(Thing.get('sharedThing'), Thing.get('sharedThing'))

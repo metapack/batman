@@ -100,10 +100,6 @@ class BatmanObject extends Object
 
   @observeAll: -> @::observe.apply @prototype, arguments
 
-  @singleton: (singletonMethodName="sharedInstance") ->
-    @classAccessor singletonMethodName,
-      get: -> @["_#{singletonMethodName}"] ||= new this
-
   @accessor '_batmanID', -> @_batmanID()
 
   @delegate: (properties..., options = {}) ->
