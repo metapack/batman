@@ -30,12 +30,6 @@ class Batman.Dispatcher extends Batman.Object
     else
       argument
 
-  class ControllerDirectory extends Batman.Object
-    @accessor '__app', Batman.Property.defaultAccessor
-    @accessor (key) -> @get("__app.#{Batman.helpers.capitalize(key)}Controller.sharedController")
-
-  @accessor 'controllers', -> new ControllerDirectory(__app: @get('app'))
-
   constructor: (app, routeMap) ->
     super({app, routeMap})
 
@@ -56,8 +50,8 @@ class Batman.Dispatcher extends Batman.Object
       [path, params] = route.pathAndParamsFromArgument(inferredParams)
       Batman.mixin(params, paramsMixin) if paramsMixin
 
-      @set 'app.currentRoute', route
-      @set 'app.currentURL', path
+      @set('app.currentRoute', route)
+      @set('app.currentURL', path)
       @get('app.currentParams').replace(params or {})
 
       route.dispatch(params)

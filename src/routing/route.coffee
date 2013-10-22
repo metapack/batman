@@ -15,6 +15,7 @@ class Batman.Route extends Batman.Object
   optionKeys: ['member', 'collection']
   testKeys: ['controller', 'action']
   isRoute: true
+
   constructor: (templatePath, baseParams) ->
     regexps = @constructor.regexps
     templatePath = "/#{templatePath}" if templatePath.indexOf('/') isnt 0
