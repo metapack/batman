@@ -1,23 +1,3 @@
-QUnit.module 'Batman.Dispatcher: getting controller instances',
-  setup: ->
-    @App = Batman()
-    @dispatcher = new Batman.Dispatcher(@App, {})
-
-test "can get defined controller's shared instance", ->
-  @App.ProductsController = new Batman.Object({sharedController: @instance = {}})
-  equal @dispatcher.get('controllers.products'), @instance
-
-test "safely gets controllers named app", ->
-  @App.AppController = new Batman.Object({sharedController: @instance = {}})
-  equal @dispatcher.get('controllers.app'), @instance
-
-test "safely gets nonexistant controllers", ->
-  equal typeof @dispatcher.get('controllers.orders'), 'undefined'
-
-test "safely gets multiword controllers", ->
-  @App.SavedSearchesController = new Batman.Object({sharedController: @instance = {}})
-  equal @dispatcher.get('controllers.savedSearches'), @instance
-
 QUnit.module 'Batman.Dispatcher: inferring paths',
   setup: ->
     class @App extends Batman.App
