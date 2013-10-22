@@ -81,6 +81,7 @@ class Batman.Controller extends Batman.Object
     @set 'action', action
     @set 'params', params
 
+    Batman.currentApp.set('currentController', this)
     @executeAction(action, params)
 
     redirectTo = @_afterFilterRedirect
