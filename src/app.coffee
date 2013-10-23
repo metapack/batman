@@ -24,7 +24,6 @@ class Batman.App extends Batman.Object
   @classAccessor 'routeMap', -> new Batman.RouteMap
   @classAccessor 'routeMapBuilder', -> new Batman.RouteMapBuilder(@, @get('routeMap'))
   @classAccessor 'dispatcher', -> new Batman.Dispatcher(@, @get('routeMap'))
-  @classAccessor 'controllers', -> @get('dispatcher.controllers')
 
   # Layout is the base view that other views can be yielded into. The
   # default behavior is that when `app.run()` is called, a new view will
