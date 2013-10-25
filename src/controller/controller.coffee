@@ -70,6 +70,15 @@ class Batman.Controller extends Batman.Object
   defaultRenderYield: 'main'
   autoScrollToHash: true
 
+  # You shouldn't call this method directly. It will instantiate or find the correct instance of the controller
+  # class and call dispatch on that instance. If you need to call a route manually, use `Batman.redirect()`.
+  @dispatch: (action, params) ->
+    controller = Batman.currentApp.currentController
+    unless controller instanceof this
+      controller = Batman.currentApp.set('currentController', new this)
+
+    controller.dispatch(action, params)
+
   # You shouldn't call this method directly. It will be called by the dispatcher when a route is called.
   # If you need to call a route manually, use `Batman.redirect()`.
   dispatch: (action, params = {}) ->
@@ -81,7 +90,6 @@ class Batman.Controller extends Batman.Object
     @set 'action', action
     @set 'params', params
 
-    Batman.currentApp.set('currentController', this)
     @executeAction(action, params)
 
     redirectTo = @_afterFilterRedirect
