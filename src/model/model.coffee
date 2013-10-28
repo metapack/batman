@@ -22,6 +22,17 @@ class Batman.Model extends Batman.Object
     Batman.initializeObject @prototype
     @::_batman.storage
 
+  @query: (mechanism, options...) ->
+    Batman.initializeObject @prototype
+    mechanism = if mechanism.isSearchAdapter then mechanism else new mechanism(@)
+    Batman.mixin mechanism, options... if options.length > 0
+    @::_batman.search = mechanism
+    mechanism
+
+  @searchAdapter: ->
+    Batman.initializeObject @prototype
+    @::_batman.search
+
   # Encoders are the tiny bits of logic which manage marshalling Batman models to and from their
   # storage representations. Encoders do things like stringifying dates and parsing them back out again,
   # pulling out nested model collections and instantiating them (and JSON.stringifying them back again),
@@ -125,7 +136,7 @@ class Batman.Model extends Batman.Object
       options = { data: options }
 
     @loadWithOptions options, callback
-  
+
   @loadWithOptions: (options, callback) ->
     @fire 'loading', options
     @_doStorageOperation 'readAll', options, (err, records, env) =>
@@ -155,6 +166,11 @@ class Batman.Model extends Batman.Object
 
   @createFromJSON: (json) ->
     @_makeOrFindRecordFromData(json)
+
+  @search: (query, callback) ->
+    Batman.developer.assert @::hasSearch(), "Can't search model #{Batman.functionName(@constructor)} without any search adapters!"
+    engine = @::_batman.get('search')
+    engine.perform(query, callback)
 
   @_loadIdentity: (id) ->
     @get('loaded.indexedByUnique.id').get(id)
@@ -358,6 +374,7 @@ class Batman.Model extends Batman.Object
     @mixin obj
 
   hasStorage: -> @_batman.get('storage')?
+  hasSearch : -> @_batman.get('search')?
 
   # `load` fetches the record from all sources possible
   load: (options, callback) ->
