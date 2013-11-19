@@ -70,3 +70,23 @@ test 'killing the superview fires the correct events on subviews', ->
   equal spies.viewDidDisappear.callCount, 1
   equal spies.destroy.callCount, 1
 
+test 'appear events are only called if the view is really in the DOM', ->
+  spies = @attachViewSpies(@view)
+  viewWillAppear = createSpy()
+  viewDidAppear = createSpy()
+
+  class @superview.TestView extends Batman.View
+    viewWillAppear: viewWillAppear
+    viewDidAppear: viewDidAppear
+
+  @view.set('html', '<div data-insertif="insertKey"><div data-view="TestView"></div></div>')
+  @superview.subviews.add(@view)
+
+  equal viewWillAppear.callCount, 0
+  equal viewDidAppear.callCount, 0
+
+  @view.set('insertKey', true)
+
+  equal viewWillAppear.callCount, 1
+  equal viewDidAppear.callCount, 1
+
