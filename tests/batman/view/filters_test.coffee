@@ -438,6 +438,42 @@ asyncTest 'has in an array', 3, ->
 
     QUnit.start()
 
+asyncTest 'indexOf returns index of element in given Batman.Set', 7, ->
+  set = new Batman.Set("a", "b", "c")
+
+  context = Batman
+    col: set
+
+  htm = '<span data-foreach-current="col" data-bind-id="current | indexOf col" data-bind="current"></span>'
+
+  helpers.render htm, context, (node, view) ->
+    equal node.length, 3
+    ok node[0].id = "0"
+    ok node[0].innerHTML = "a"
+    ok node[1].id = "1"
+    ok node[1].innerHTML = "b"
+    ok node[2].id = "2"
+    ok node[2].innerHTML = "c"
+    QUnit.start()
+
+asyncTest 'indexOf returns index of element in given array', 7, ->
+  array = ["a", "b", "c"]
+
+  context = Batman
+    col: array
+
+  htm = '<span data-foreach-current="col" data-bind-id="current | indexOf col" data-bind="current"></span>'
+
+  helpers.render htm, context, (node, view) ->
+    equal node.length, 3
+    ok node[0].id = "0"
+    ok node[0].innerHTML = "a"
+    ok node[1].id = "1"
+    ok node[1].innerHTML = "b"
+    ok node[2].id = "2"
+    ok node[2].innerHTML = "c"
+    QUnit.start()
+
 asyncTest 'meta', 2, ->
   context = Batman
     foo: Batman

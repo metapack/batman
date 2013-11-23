@@ -112,6 +112,11 @@ Batman.Filters =
   first: buntUndefined (value) ->
     value[0]
 
+  indexOf: (obj, collection) ->
+    if Batman.typeOf(collection) != 'Array'
+      collection = collection.get('toArray')
+    collection.indexOf(obj)
+
   meta: buntUndefined (value, keypath) ->
     Batman.developer.assert value.meta, "Error, value doesn't have a meta to filter on!"
     value.meta.get(keypath)
