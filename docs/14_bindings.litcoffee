@@ -593,7 +593,7 @@ If you were to dispatch `first#index`:
 <input type="checkbox" data-bind-checked="things | has 'thing1'" checked="true"></input>
 ```
 
-## indexOf(obj, collection) : number
+## indexOf(collection, obj) : number
 
 Returns the first index at which the given object can be found in the collection, or -1 if not present. Supports both Batman.Set and simple arrays.
 
@@ -604,7 +604,7 @@ class Sample.CollectionController extends Batman.Controller
 ```
 
 ```html
-<option data-foreach-current="col" data-bind-value="current | indexOf col" data-bind="current" />
+<option data-foreach-current="col" data-bind-value="col | indexOf current" data-bind="current" />
 ```
 
 ## first(iterable) : value

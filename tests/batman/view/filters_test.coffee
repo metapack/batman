@@ -444,7 +444,7 @@ asyncTest 'indexOf returns index of element in given Batman.Set', 7, ->
   context = Batman
     col: set
 
-  htm = '<span data-foreach-current="col" data-bind-id="current | indexOf col" data-bind="current"></span>'
+  htm = '<span data-foreach-current="col" data-bind-id="col | indexOf current" data-bind="current"></span>'
 
   helpers.render htm, context, (node, view) ->
     equal node.length, 3
@@ -462,7 +462,7 @@ asyncTest 'indexOf returns index of element in given array', 7, ->
   context = Batman
     col: array
 
-  htm = '<span data-foreach-current="col" data-bind-id="current | indexOf col" data-bind="current"></span>'
+  htm = '<span data-foreach-current="col" data-bind-id="col | indexOf current" data-bind="current"></span>'
 
   helpers.render htm, context, (node, view) ->
     equal node.length, 3

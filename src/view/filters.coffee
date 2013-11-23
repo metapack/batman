@@ -112,7 +112,7 @@ Batman.Filters =
   first: buntUndefined (value) ->
     value[0]
 
-  indexOf: (obj, collection) ->
+  indexOf: (collection, obj) ->
     if Batman.typeOf(collection) != 'Array'
       collection = collection.get('toArray')
     collection.indexOf(obj)
