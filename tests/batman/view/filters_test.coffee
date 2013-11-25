@@ -448,12 +448,12 @@ asyncTest 'indexOf returns index of element in given Batman.Set', 7, ->
 
   helpers.render htm, context, (node, view) ->
     equal node.length, 3
-    ok node[0].id = "0"
-    ok node[0].innerHTML = "a"
-    ok node[1].id = "1"
-    ok node[1].innerHTML = "b"
-    ok node[2].id = "2"
-    ok node[2].innerHTML = "c"
+    equal node[0].id, "0"
+    equal node[0].innerHTML, "a"
+    equal node[1].id, "1"
+    equal node[1].innerHTML, "b"
+    equal node[2].id, "2"
+    equal node[2].innerHTML, "c"
     QUnit.start()
 
 asyncTest 'indexOf returns index of element in given array', 7, ->
@@ -466,12 +466,12 @@ asyncTest 'indexOf returns index of element in given array', 7, ->
 
   helpers.render htm, context, (node, view) ->
     equal node.length, 3
-    ok node[0].id = "0"
-    ok node[0].innerHTML = "a"
-    ok node[1].id = "1"
-    ok node[1].innerHTML = "b"
-    ok node[2].id = "2"
-    ok node[2].innerHTML = "c"
+    equal node[0].id, "0"
+    equal node[0].innerHTML, "a"
+    equal node[1].id, "1"
+    equal node[1].innerHTML, "b"
+    equal node[2].id, "2"
+    equal node[2].innerHTML, "c"
     QUnit.start()
 
 asyncTest 'meta', 2, ->
