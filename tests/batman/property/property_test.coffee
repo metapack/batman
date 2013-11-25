@@ -66,6 +66,22 @@ test "accessing a property with a cached value should not call the accessor", ->
   equal @object.get('foo'), 12345
   equal spy.callCount, 0
 
+test "accessing a nested property that is not cacheable", ->
+  _object = @object
+  class ParentClass extends Batman.Object
+    @accessor 'foo', -> _object
+
+  spy = createSpy()
+  @class.accessor 'bar',
+    get: spy
+    cache: false
+
+  parentObject = new ParentClass
+  parentObject.get('foo.bar')
+  parentObject.get('foo.bar')
+
+  equal spy.callCount, 2
+
 test "observing a property should call the accessor to populate its sources", ->
   @class.accessor 'foo', (spy = createSpy())
   @object.observe 'foo', ->
