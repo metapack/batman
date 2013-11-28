@@ -7,7 +7,7 @@ class Batman.BindingParser extends Batman.Object
     @node = @view.node
     @parseTree(@node)
 
-  bindingSortOrder = ["defineview", "foreach", "renderif", "view", "formfor", "context", "bind", "source", "target", "track", "event"]
+  bindingSortOrder = ["destroyif", "defineview", "foreach", "renderif", "view", "formfor", "context", "bind", "source", "target", "track", "event"]
   viewBackedBindings = ["foreach", "renderif", "formfor", "context"]
 
   bindingSortPositions = {}
@@ -31,8 +31,13 @@ class Batman.BindingParser extends Batman.Object
 
   parseTree: (root) ->
     while root
-      skipChildren = @parseNode(root)
+      [skipChildren, removeNode] = @parseNode(root)
+      if removeNode
+        last = root
+
       root = @nextNode(root, skipChildren)
+      if removeNode
+        last.parentNode.removeChild(last)
 
     @fire('bindingsInitialized')
     return
@@ -67,7 +72,7 @@ class Batman.BindingParser extends Batman.Object
           @once('bindingsInitialized', do (binding) -> -> binding.initialized.call(binding))
 
         if binding?.skipChildren
-          return true
+          return [true, binding.removeNode]
 
         if binding?.backWithView
           isViewBacked = true
@@ -75,7 +80,7 @@ class Batman.BindingParser extends Batman.Object
     if isViewBacked and backingView = Batman._data(node, 'view')
       backingView.initializeBindings()
 
-    return isViewBacked
+    return [isViewBacked, false]
 
   nextNode: (node, skipChildren) ->
     if not skipChildren

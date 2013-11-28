@@ -49,6 +49,13 @@ Batman.DOM.readers =
     definition.invert = true
     new Batman.DOM.ShowHideBinding(definition)
 
+  destroyif: (definition) ->
+    if definition.view.get(definition.keyPath)
+      return {skipChildren: true, removeNode: true}
+
+    definition.node.removeAttribute('data-destroyif')
+    return {}
+
   insertif: (definition) ->
     new Batman.DOM.InsertionBinding(definition)
 
