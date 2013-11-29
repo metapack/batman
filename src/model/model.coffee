@@ -1,12 +1,14 @@
 #= require ../object
 #= require ../utilities/state_machine
+#= require ./query
 
 class Batman.Model extends Batman.Object
+  @classMixin Batman.Queryable
+
   # Override this property to define the key which storage adapters will use to store instances of this model under.
   #  - For RestStorage, this ends up being part of the url built to store this model
   #  - For LocalStorage, this ends up being the namespace in localStorage in which JSON is stored
   @storageKey: null
-
   @primaryKey: 'id'
 
   # Pick one or many mechanisms with which this model should be persisted. The mechanisms
@@ -125,7 +127,7 @@ class Batman.Model extends Batman.Object
       options = { data: options }
 
     @loadWithOptions options, callback
-  
+
   @loadWithOptions: (options, callback) ->
     @fire 'loading', options
     @_doStorageOperation 'readAll', options, (err, records, env) =>
@@ -134,6 +136,16 @@ class Batman.Model extends Batman.Object
         callback?(err, [])
       else
         @fire 'loaded', records, env
+        callback?(err, records, env)
+
+  @search: (query, callback) ->
+    @fire 'loading', query
+    @_doStorageOperation 'search', {query}, (err, records, env) =>
+      if err?
+        @fire('error', err)
+        callback?(err, [])
+      else
+        @fire('loaded', records, env)
         callback?(err, records, env)
 
   @create: (attrs, callback) ->

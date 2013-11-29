@@ -200,7 +200,7 @@ class Batman.RestStorage extends Batman.StorageAdapter
     env.result = env.subject
     next()
 
-  @::after 'readAll', @skipIfError (env, next) ->
+  @::after 'readAll', 'search', @skipIfError (env, next) ->
     namespace = @collectionJsonNamespace(env.subject)
     env.recordsAttributes = @extractFromNamespace(env.json, namespace)
 
@@ -233,6 +233,15 @@ class Batman.RestStorage extends Batman.StorageAdapter
       @::[key] = @skipIfError (env, next) ->
         env.options.method ||= @constructor.HTTPMethods[key]
         @request(env, next)
+
+  search: @skipIfError (env, next) ->
+    query = env.options.query?.toJSON()
+
+    where = query.where
+    delete(query.where)
+
+    env.options.data = Batman.mixin(query, where)
+    @request(env, next)
 
   @::after 'all', (env, next) ->
     if env.error
