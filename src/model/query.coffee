@@ -6,11 +6,7 @@ class Batman.Query extends Batman.Object
   constructor: (@base, options) ->
     @set('options', new Batman.Object(options))
 
-  get: (keypath) ->
-    if keypath.split('.').shift() in @constructor.OPTION_KEYS
-      @get('options').get(keypath)
-    else
-      Batman.Object::get.call(this, keypath)
+  get: (keypath) -> Batman.Object::get.call(@options, keypath)
 
   where: (constraints) ->
     @set('options.where', Batman.mixin(@get('where'), constraints))
