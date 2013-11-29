@@ -23,10 +23,11 @@ class Batman.OffsetPaginator extends Batman.Paginator
 
 class Batman.RelativePaginator extends Batman.Paginator
   first: (callback) ->
-    @query.load(@_storeRelativeIDs(callback))
+    @query.where(direction: 'next')
+          .load(@_storeRelativeIDs(callback))
 
   next: (callback) ->
-    @query.where(direction: 'next', last_id: @firstID)
+    @query.where(direction: 'next', first_id: @firstID)
           .load(@_storeRelativeIDs(callback))
 
   prev: (callback) ->
