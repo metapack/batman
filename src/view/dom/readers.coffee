@@ -50,9 +50,7 @@ Batman.DOM.readers =
     new Batman.DOM.ShowHideBinding(definition)
 
   destroyif: (definition) ->
-    if definition.view.get(definition.keyPath)
-      return {skipChildren: true, removeNode: true}
-
+    return {skipChildren: true, removeNode: true} if definition.view.get(definition.keyPath)
     definition.node.removeAttribute('data-destroyif')
     return {}
 

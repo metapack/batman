@@ -32,13 +32,9 @@ class Batman.BindingParser extends Batman.Object
   parseTree: (root) ->
     while root
       [skipChildren, removeNode] = @parseNode(root)
-      if removeNode
-        last = root
-
+      last = root if removeNode
       root = @nextNode(root, skipChildren)
-      if removeNode
-        last.parentNode.removeChild(last)
-
+      last.parentNode.removeChild(last) if removeNode
     @fire('bindingsInitialized')
     return
 
