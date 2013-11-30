@@ -19,7 +19,6 @@ files.lib = [
 
 files.extra = [
   'src/extras/batman.rails.coffee',
-  'src/extras/batman.paginator.coffee',
   'src/extras/batman.i18n.coffee'
 ]
 

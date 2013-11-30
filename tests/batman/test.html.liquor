@@ -19,8 +19,6 @@
 
     #{ js('/src/extras/batman.i18n.js') }
 
-    #{ js('/src/extras/batman.paginator.js') }
-
     #{ js('/tests/batman/tests.js') }
 
     <script type="text/javascript" src="../lib/sinon.js"></script>
