@@ -114,7 +114,7 @@ Batman.Filters =
 
   indexOf: (collection, obj) ->
     if Batman.typeOf(collection) != 'Array'
-      collection = collection.get('toArray')
+      collection = collection.toArray()
     collection.indexOf(obj)
 
   meta: buntUndefined (value, keypath) ->
