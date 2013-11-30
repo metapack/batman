@@ -7,29 +7,27 @@ class Batman.Query extends Batman.Object
     options.where ||= {}
     @set('options', new Batman.Object(options))
 
-  get: (keypath) -> Batman.Object::get.call(@options, keypath)
-
   where: (constraints) ->
-    @options.set('where', Batman.mixin(@get('where'), constraints))
+    @set('options.where', Batman.mixin(@get('where'), constraints))
     return this
 
   uniq: ->
     return @limit(1)
 
   limit: (amount) ->
-    @options.set('limit', amount)
+    @set('options.limit', amount)
     return this
 
   offset: (amount) ->
-    @options.set('offset', amount)
+    @set('options.offset', amount)
     return this
 
   order: (order) ->
-    @options.set('order', order)
+    @set('options.order', order)
     return this
 
   distinct: ->
-    @options.set('distinct', true)
+    @set('options.distinct', true)
     return this
 
   load: (callback) ->
