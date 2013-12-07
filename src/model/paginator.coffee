@@ -8,7 +8,7 @@ class Batman.Paginator extends Batman.Object
   load: (query, callback) ->
     query.load (err, models) =>
       @fire('error', err) if err?
-      @fire('paginate', models) if models?
+      @fire('paginate', models) if models?.length
       callback?(err, models)
 
 class Batman.OffsetPaginator extends Batman.Paginator
