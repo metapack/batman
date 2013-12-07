@@ -1,9 +1,27 @@
 QUnit.module "Batman.Paginator",
   setup: ->
+    error = {message: 'Test'}
+    results = [new Batman.Model(id: 1), new Batman.Model(id: 2)]
+
     @paginator = new Batman.Paginator(Batman.Model)
+    @paginator.get('query').load = (cb) -> cb?(error, results)
 
 test "The paginator defaults to a limit of 1", ->
   equal @paginator.get('query.options.limit'), 1
+
+asyncTest "paginate event emitted when models are loaded", 1, ->
+  @paginator.on 'paginate', (models) ->
+    equal models.length, 2
+    QUnit.start()
+
+  @paginator.load(@paginator.get('query'))
+
+asyncTest "error event emitted when errors are returned", 1, ->
+  @paginator.on 'error', (error) ->
+    equal error.message, 'Test'
+    QUnit.start()
+
+  @paginator.load(@paginator.get('query'))
 
 QUnit.module "Batman.OffsetPaginator",
   setup: ->
