@@ -5,34 +5,41 @@ class Batman.Paginator extends Batman.Object
     options.limit ||= 1
     @query = new Batman.Query(model, options)
 
+  load: (query, callback) ->
+    query.load (err, models) =>
+      @fire('error', err) if err?
+      @fire('paginate', models) if models?
+      callback?(err, models)
+
 class Batman.OffsetPaginator extends Batman.Paginator
   constructor: (model, options = {}) ->
     options.offset ||= 0
     super(model, options)
 
   first: (callback) ->
-    @query.offset(0).load(callback)
+    @query.offset(0)
+    @load(@query, callback)
 
   next: (callback) ->
     @query.offset(@query.get('options.offset') + @query.get('options.limit'))
-          .load(callback)
+    @load(@query, callback)
 
   prev: (callback) ->
     @query.offset(Math.max(@query.get('options.offset') - @query.get('options.limit'), 0))
-          .load(callback)
+    @load(@query, callback)
 
 class Batman.RelativePaginator extends Batman.Paginator
   first: (callback) ->
     @query.where(direction: 'next')
-          .load(@_storeRelativeIDs(callback))
+    @load(@query, @_storeRelativeIDs(callback))
 
   next: (callback) ->
     @query.where(direction: 'next', relative_id: @lastID)
-          .load(@_storeRelativeIDs(callback))
+    @load(@query, @_storeRelativeIDs(callback))
 
   prev: (callback) ->
     @query.where(direction: 'prev', relative_id: @firstID)
-          .load(@_storeRelativeIDs(callback))
+    @load(@query, @_storeRelativeIDs(callback))
 
   _storeRelativeIDs: (callback) ->
     (error, models) =>
