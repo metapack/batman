@@ -7,8 +7,15 @@ class Batman.Query extends Batman.Object
     options.where ||= {}
     @set('options', new Batman.Object(options))
 
-  where: (constraints) ->
-    @set('options.where', Batman.mixin(@get('where'), constraints))
+  where: (key, value) ->
+    constraints = {}
+
+    if Batman.typeOf(key) == 'String'
+      constraints[key] = value
+    else
+      constraints = key
+
+    @set('options.where', Batman.mixin({}, @get('options.where'), constraints))
     return this
 
   uniq: ->

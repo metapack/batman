@@ -10,6 +10,13 @@ test "Chaining the same call will overwrite the first one", ->
   @query.limit(5).limit(10)
   equal @query.get('options.limit'), 10
 
+test "Query::where can be called with an object or key and value", ->
+  @query.where(foo: 'bar')
+  equal @query.get('options.where.foo'), 'bar'
+
+  @query.where('foo', 'baz')
+  equal @query.get('options.where.foo'), 'baz'
+
 test "Query::where mixes in constraints to the existing list", ->
   @query.where(foo: 'bar')
         .where(bar: 'foo')
