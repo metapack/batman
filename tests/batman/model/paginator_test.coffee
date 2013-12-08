@@ -9,6 +9,14 @@ QUnit.module "Batman.Paginator",
 test "The paginator defaults to a limit of 1", ->
   equal @paginator.get('query.options.limit'), 1
 
+test "Query function are available and chainable on a paginator", ->
+  @paginator.limit(5)
+  equal @paginator.get('query.options.limit'), 5
+
+  @paginator.limit(2).offset(1)
+  equal @paginator.get('query.options.limit'), 2
+  equal @paginator.get('query.options.offset'), 1
+
 asyncTest "paginate event emitted when models are loaded", 1, ->
   @paginator.on 'paginate', (models) ->
     equal models.length, 2
@@ -30,7 +38,7 @@ QUnit.module "Batman.OffsetPaginator",
     @paginator.get('query').load = (cb) -> cb?(null, results)
 
 test "First sets the offset to 0", ->
-  @paginator.get('query').offset(10)
+  @paginator.offset(10)
   @paginator.first()
   equal @paginator.get('query.options.offset'), 0
 
@@ -39,18 +47,18 @@ test "Prev cannot set the offset to a negative number", ->
   equal @paginator.get('query.options.offset'), 0
 
 test "hasNext is true if the requested amount of models are returned", ->
-  @paginator.get('query').limit(2)
+  @paginator.limit(2)
   @paginator.first()
   ok @paginator.get('hasNext')
 
 test "hasNext is false if less than the requested amount of models are returned", ->
-  @paginator.get('query').limit(3)
+  @paginator.limit(3)
   @paginator.first()
   ok !@paginator.get('hasNext')
 
 test "hasPrev is true unless the offset is 0", ->
   ok !@paginator.get('hasPrev')
-  @paginator.get('query').offset(1)
+  @paginator.offset(1)
   ok @paginator.get('hasPrev')
 
 QUnit.module "Batman.RelativePaginator",
@@ -76,23 +84,23 @@ test "Prev sets the relative ID to the first fetched ID", ->
     equal @paginator.get('query.options.where.direction'), 'prev'
 
 test "hasNext is false if less than the requested amount of models are returned on a next call", ->
-  @paginator.get('query').limit(2)
+  @paginator.limit(2)
   @paginator.next()
   ok @paginator.get('hasNext')
   ok @paginator.get('hasPrev')
 
-  @paginator.get('query').limit(3)
+  @paginator.limit(3)
   @paginator.next()
   ok !@paginator.get('hasNext')
   ok @paginator.get('hasPrev')
 
 test "hasPrev is false if less than the requested amount of models are returned on a prev call", ->
-  @paginator.get('query').limit(2)
+  @paginator.limit(2)
   @paginator.prev()
   ok @paginator.get('hasPrev')
   ok @paginator.get('hasNext')
 
-  @paginator.get('query').limit(3)
+  @paginator.limit(3)
   @paginator.prev()
   ok !@paginator.get('hasPrev')
   ok @paginator.get('hasNext')
