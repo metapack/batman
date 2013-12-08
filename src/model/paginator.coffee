@@ -1,6 +1,8 @@
 #= require ./query
 
 class Batman.Paginator extends Batman.Object
+  @mixin Batman.QueryAccess
+
   constructor: (model, options = {}) ->
     options.limit ||= 1
     @query = new Batman.Query(model, options)
