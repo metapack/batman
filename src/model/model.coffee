@@ -125,7 +125,7 @@ class Batman.Model extends Batman.Object
       options = { data: options }
 
     @loadWithOptions options, callback
-  
+
   @loadWithOptions: (options, callback) ->
     @fire 'loading', options
     @_doStorageOperation 'readAll', options, (err, records, env) =>
@@ -277,10 +277,13 @@ class Batman.Model extends Batman.Object
   @accessor Model.defaultAccessor =
     get: (k) -> Batman.getPath @, ['attributes', k]
     set: (k, v) ->
+      prev = @get(k)
+      return prev if prev == v
+
       if @_willSet(k)
         @get('attributes').set(k, v)
       else
-        @get(k)
+        prev
     unset: (k) -> @get('attributes').unset(k)
 
   # Add a universally accessible accessor for retrieving the primary key, regardless of which key its stored under.
