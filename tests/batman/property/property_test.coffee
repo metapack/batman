@@ -400,7 +400,7 @@ test "property() works on non Batman objects", ->
 test "toJSON with null values works correctly", ->
   properties = {prop1: 1, prop2: "foo", prop3: null, prop4: undefined}
   obj = new Batman.Object properties
-  deepEqual obj.toJSON(), properties
+  deepEqual obj.toJSON(), {prop1: 1, prop2: "foo", prop3: null}
 
 # #177 (http://jsfiddle.net/zbQMZ/)
 test "setValue or unsetValue within a getter should not register the updated property as a source of the accessor's property", ->
