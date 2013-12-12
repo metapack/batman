@@ -177,7 +177,7 @@ class Batman.Property extends Batman.PropertyEvent
 
   setValue: (val) ->
     return unless set = @accessor().set
-    get = @accessor().get?
+    get = @accessor().get
 
     if get == @constructor.defaultAccessor.get # if they're using the default accessor
       # then don't set if equivalent (for now, simple === check)
