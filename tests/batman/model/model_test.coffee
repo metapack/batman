@@ -70,6 +70,56 @@ test "createFromJSON leaves the record clean", ->
   equal product.get('lifecycle.state'), 'clean'
   equal product.get('dirtyKeys').length, 0
 
+test "setting a property to the same value (string type) leaves the record clean", ->
+  @Product.encode 'name', 'id'
+
+  product = @Product.createFromJSON(name: 'test', id: 1)
+  equal product.get('lifecycle.state'), 'clean'
+  equal product.get('dirtyKeys').length, 0
+  product.set('name', 'test')
+  equal product.get('lifecycle.state'), 'clean'
+  equal product.get('dirtyKeys').length, 0
+  product.set('name', '')
+  equal product.get('lifecycle.state'), 'dirty'
+  equal product.get('dirtyKeys').length, 1
+
+test "setting a property to the same value (string type) leaves the record clean even when no encoders are present", ->
+
+  product = @Product.createFromJSON(name: 'test', id: 1)
+  equal product.get('lifecycle.state'), 'clean'
+  equal product.get('dirtyKeys').length, 0
+  product.set('name', 'test')
+  equal product.get('lifecycle.state'), 'clean'
+  equal product.get('dirtyKeys').length, 0
+  product.set('name', '')
+  equal product.get('lifecycle.state'), 'dirty'
+  equal product.get('dirtyKeys').length, 1
+
+test "setting a property to the same value (number type) leaves the record clean", ->
+  @Product.encode 'name', 'id'
+
+  product = @Product.createFromJSON(name: 5, id: 1)
+  equal product.get('lifecycle.state'), 'clean'
+  equal product.get('dirtyKeys').length, 0
+  product.set('name', 5)
+  equal product.get('lifecycle.state'), 'clean'
+  equal product.get('dirtyKeys').length, 0
+  product.set('name', 6)
+  equal product.get('lifecycle.state'), 'dirty'
+  equal product.get('dirtyKeys').length, 1
+
+test "setting a property to the same value (number type) leaves the record clean even when no encoders are present", ->
+
+  product = @Product.createFromJSON(name: 5, id: 1)
+  equal product.get('lifecycle.state'), 'clean'
+  equal product.get('dirtyKeys').length, 0
+  product.set('name', 5)
+  equal product.get('lifecycle.state'), 'clean'
+  equal product.get('dirtyKeys').length, 0
+  product.set('name', 6)
+  equal product.get('lifecycle.state'), 'dirty'
+  equal product.get('dirtyKeys').length, 1
+
 test "createFromJSON will return an existing instance if in the identity map", ->
   @Product.encode 'name', 'id'
 
