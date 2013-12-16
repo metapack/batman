@@ -177,7 +177,6 @@ class Batman.Property extends Batman.PropertyEvent
 
   setValue: (val) ->
     return unless set = @accessor().set
-    get = @accessor().get
 
     @_changeValue -> set.call(@base, @key, val)
   unsetValue: ->
