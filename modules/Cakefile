@@ -1,0 +1,28 @@
+fs         = require('fs')
+coffee     = require('coffee-script')
+through    = require('through')
+browserify = require('browserify')
+
+buildModule = (name, output) ->
+  builder = browserify(["./#{name}.coffee"], basedir: "./#{name}")
+
+  builder.transform (file) ->
+    data = ''
+
+    write = (buf) -> data += buf
+    end = ->
+      @queue(coffee.compile(data))
+      @queue(null)
+
+    through(write, end)
+
+  builder.bundle(debug: true)
+         .pipe(fs.createWriteStream(output, encoding: 'utf8'))
+
+option '-o', '--output [DIR]', 'directory for compiled code'
+
+task 'build:core', 'compile the core module', (options) ->
+  output = "#{options.output || 'dist'}/core.js"
+
+  buildModule('core', output)
+  console.log("Compiled core to #{output}")
