@@ -14,15 +14,22 @@ class Batman.NumericValidator extends Batman.Validator
       errors.add key, @format(key, 'not_an_integer')
     else
       if options.greaterThan? and value <= options.greaterThan
-        errors.add key, @format(key, 'greater_than', {count: options.greaterThan})
+        messageSymbol = 'greater_than'
+        count = options.greaterThan
       if options.greaterThanOrEqualTo? and value < options.greaterThanOrEqualTo
-        errors.add key, @format(key, 'greater_than_or_equal_to', {count: options.greaterThanOrEqualTo})
+        messageSymbol = 'greater_than_or_equal_to'
+        count = options.greaterThanOrEqualTo
       if options.equalTo? and value != options.equalTo
-        errors.add key, @format(key, 'equal_to', {count: options.equalTo})
+        messageSymbol = 'equal_to'
+        count = options.equalTo
       if options.lessThan? and value >= options.lessThan
-        errors.add key, @format(key, 'less_than', {count: options.lessThan})
+        messageSymbol = 'less_than'
+        count = options.lessThan
       if options.lessThanOrEqualTo? and value > options.lessThanOrEqualTo
-        errors.add key, @format(key, 'less_than_or_equal_to', {count: options.lessThanOrEqualTo})
+        messageSymbol = 'less_than_or_equal_to'
+        count = options.lessThanOrEqualTo
+      if messageSymbol?
+        errors.add key, messageSymbol, Batman.mixin({interpolations: {count}}, @options)
     callback()
 
   isNumeric: (value) ->

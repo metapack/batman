@@ -10,7 +10,7 @@ class Batman.AssociatedValidator extends Batman.Validator
       count = 1
       childFinished = (err, childErrors) =>
         if childErrors.length > 0
-          errors.add key, @format(key, 'invalid_association')
+          errors.add key, 'invalid_association', @options
         if --count == 0 then callback()
 
       if value?.forEach?

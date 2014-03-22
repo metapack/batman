@@ -18,11 +18,16 @@ class Batman.LengthValidator extends Batman.Validator
       return callback() if @handleBlank(value)
       value ?= []
       if options.minLength and value.length < options.minLength
-        errors.add key, @format(key, 'too_short', {count: options.minLength})
+        messageSymbol = 'too_short'
+        count = options.minLength
       if options.maxLength and value.length > options.maxLength
-        errors.add key, @format(key, 'too_long', {count: options.maxLength})
+        messageSymbol = 'too_long'
+        count = options.maxLength
       if options.length and value.length isnt options.length
-        errors.add key, @format(key, 'wrong_length', {count: options.length})
+        messageSymbol = 'wrong_length'
+        count = options.length
+      if messageSymbol?
+        errors.add key, messageSymbol, Batman.mixin({interpolations: {count}}, @options)
       callback()
 
 Batman.Validators.push Batman.LengthValidator

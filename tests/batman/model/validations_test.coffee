@@ -64,6 +64,7 @@ validationsTestSuite = ->
       p.validate (error, errors) ->
         throw error if error
         equal errors.length, 1
+        equal errors.get('first.fullMessage'), "Min must be at least 4 characters"
         QUnit.start()
 
   asyncTest "presence", 3, ->
@@ -455,6 +456,7 @@ validationsTestSuite = ->
       p.validate (err, errors) ->
         throw err if err
         equal errors.length, 1
+        equal errors.get('first.fullMessage'), "Password and confirmation do not match"
         p.set 'password_confirmation', 'test'
         p.validate (err, errors) ->
           throw err if err

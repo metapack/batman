@@ -15,7 +15,7 @@ class Batman.ConfirmationValidator extends Batman.Validator
     confirmation_value = record.get(confirmation_key)
 
     if value != confirmation_value
-      errors.add key, 'and confirmation do not match'
+      errors.add key, 'confirmation_does_not_match', @options
     callback()
 
 Batman.Validators.push Batman.ConfirmationValidator
