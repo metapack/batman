@@ -69,6 +69,7 @@ class Batman.Model extends Batman.Object
       for validatorClass in Batman.Validators
         if (matches = validatorClass.matches(optionsOrFunction))
           validators.push
+            message: optionsOrFunction.message
             keys: keys
             validator: new validatorClass(matches)
             if: optionsOrFunction.if
@@ -281,7 +282,7 @@ class Batman.Model extends Batman.Object
   @accessor 'attributes', -> @attributes ||= new Batman.Hash
   @accessor 'dirtyKeys', -> @dirtyKeys ||= new Batman.Hash
   @accessor '_dirtiedKeys', -> @_dirtiedKeys ||= new Batman.SimpleSet
-  @accessor 'errors', -> @errors ||= new Batman.ErrorsSet
+  @accessor 'errors', -> @errors ||= new Batman.ErrorsSet(@)
   @accessor 'isNew', -> @isNew()
   @accessor 'isDirty', -> @isDirty()
 

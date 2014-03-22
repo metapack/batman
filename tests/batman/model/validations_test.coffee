@@ -581,6 +581,45 @@ validationsTestSuite = ->
           equal errors.length, 0
           QUnit.start()
 
+  asyncTest "Validation takes a custom message", ->
+    class Product extends Batman.Model
+      @validate 'name', presence: true, message: "You can't have a product without a name"
+
+    p = new Product(name: null)
+    p.validate (err, errors) ->
+      throw err if err
+      equal errors.length, 1
+      equal errors.get('first.fullMessage'), "You can't have a product without a name"
+      QUnit.start()
+
+  asyncTest "Validation takes a custom message which can be a function", ->
+    class Product extends Batman.Model
+      @validate 'name', presence: true, message: -> "You have to put a name for product ##{@get('id')}"
+    p = new Product(name: null, id: 50)
+    p.validate (err, errors) ->
+      throw err if err
+      equal errors.length, 1
+      equal errors.get('first.fullMessage'), "You have to put a name for product #50"
+      QUnit.start()
+
+  asyncTest "Validation takes a custom translation", ->
+    errorMessageObject = {product: {name: {blank: "This must have a name!"}}}
+    try
+      # this doesn't work after i18n is enabled:
+      Batman.mixin(Batman.translate.messages.errors.messages, errorMessageObject)
+    catch
+      Batman.I18N.set('locales.en.errors.messages', errorMessageObject)
+    class Product extends Batman.Model
+      @resourceName: 'product'
+      @validate 'name', presence: true
+
+    p = new Product(name: null)
+    p.validate (err, errors) ->
+      throw err if err
+      equal errors.length, 1
+      equal errors.get('first.fullMessage'), "This must have a name!"
+      QUnit.start()
+
 QUnit.module "Batman.Model: Validations"
 validationsTestSuite()
 

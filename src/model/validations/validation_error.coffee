@@ -6,9 +6,9 @@ class Batman.ValidationError extends Batman.Object
       Batman.t 'errors.base.format',
         message: @message
     else
-      Batman.t 'errors.format',
+      Batman.t('errors.format',
         attribute: Batman.helpers.humanize(Batman.ValidationError.singularizeAssociated(@attribute))
-        message: @message
+        message: @message).trim()
 
   constructor: (attribute, message) -> super({attribute, message})
 
