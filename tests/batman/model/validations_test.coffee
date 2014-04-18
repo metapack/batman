@@ -604,7 +604,7 @@ validationsTestSuite = ->
       equal errors.get('first.fullMessage'), "You have to put a name for product #50"
       QUnit.start()
 
-  asyncTest "Validation takes a custom translation", ->
+  asyncTest "Validation takes a custom translation as errors.messages.resourceName.field.errorKey and doesnt interfere with other messages", ->
     errorMessageObject = {product: {name: {blank: "This must have a name!"}}}
     try
       # this doesn't work after i18n is enabled:
@@ -614,12 +614,14 @@ validationsTestSuite = ->
     class Product extends Batman.Model
       @resourceName: 'product'
       @validate 'name', presence: true
+      @validate 'brand', presence: true
 
-    p = new Product(name: null)
+    p = new Product(name: null, brand: null)
     p.validate (err, errors) ->
       throw err if err
-      equal errors.length, 1
+      equal errors.length, 2
       equal errors.get('first.fullMessage'), "This must have a name!"
+      equal errors.get('last.fullMessage'), "Brand can't be blank"
       QUnit.start()
 
 QUnit.module "Batman.Model: Validations"
