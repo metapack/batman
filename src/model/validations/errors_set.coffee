@@ -11,6 +11,11 @@ class Batman.ErrorsSet extends Batman.Set
 
   # Define a shorthand method for adding errors to a key.
   add: (key, error, options={}) ->
+    # allow normalize message to make key blank:
+    [key, errorMessage] = @_normalizeMessage(key, error, options)
+    super(new Batman.ValidationError(key, errorMessage))
+
+  _normalizeMessage: (key, error, options) ->
     if message = options.message
       key = ""
       errorMessage = if typeof message is "function"
@@ -18,15 +23,20 @@ class Batman.ErrorsSet extends Batman.Set
       else
         message
     else if @_isSymbol.exec(error)
-      interpolations = options.interpolations
-      if @record.constructor.resourceName and specificMessage = Batman.t("errors.messages.#{@record.constructor.resourceName}.#{key}.#{error}", interpolations)
-        key = ""
-        errorMessage = specificMessage
-      else
-        errorMessage = Batman.t("errors.messages.#{error}", interpolations)
+      [key, errorMessage] = @_lookupMessage(key, error, options)
     else
       errorMessage = error
-    super(new Batman.ValidationError(key, errorMessage))
+    [key, errorMessage]
+
+  _lookupMessage: (key, error, options) ->
+    interpolations = options.interpolations
+    resourceName = @record.constructor.resourceName
+    if resourceName and specificMessage = Batman.t("errors.messages.#{resourceName}.#{key}.#{error}", interpolations)
+      key = ""
+      errorMessage = specificMessage
+    else
+      errorMessage = Batman.t("errors.messages.#{error}", interpolations)
+    [key, errorMessage]
 
   # Matches `too_long` and friends
   _isSymbol: /^[a-z_]+$/

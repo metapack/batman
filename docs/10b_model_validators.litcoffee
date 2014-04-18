@@ -134,9 +134,11 @@ Returns a new `Batman.ErrorsSet` for errors on `record`.
 Adds a new `Batman.ValidationError` on the record's attribute `field`, deriving name from `messageKey` and `options`:
 
 - if `options.message` is a string, it is used as the error's message
-- if `options.message` is a function, it is called with the record as `this`.
-- if `messageKey` is underscore-cased, it is used to lookup an error message.
+- if `options.message` is a function, it is called with the record as `this`
+- if `messageKey` is underscore-cased, it is used to lookup an error message
 - otherwise, `messageKey` is used as the error's message
+
+`options.interpolations` is interpolated to error message if one is found for `messageKey`.
 
 ## ::.record : Model
 

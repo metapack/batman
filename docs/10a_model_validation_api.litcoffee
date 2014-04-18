@@ -83,6 +83,11 @@ If you pass a string as `if` or `unless`, it will do a `@get(string)` on the rec
 
 Batman.js ships with straightforward messages for the built-in validators. However, if you need a custom message (for `Batman.I18N`, etc), there are several ways to add them.
 
+1. __Pass a `message` option__. For example:
+  ```
+    @validate 'name', presence: true, message: "Please provide a name"
+  ```
+  If you pass a `message` option, the `key` will not be interpolated into the message.
 1. __Use a custom validation__. In your custom validation, add the error with your custom message, for example:
   ```coffeescript
     errors.add("email_address", "must be provided to ensure that your password isn't lost!")
