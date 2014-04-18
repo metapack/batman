@@ -81,11 +81,12 @@ If you pass a string as `if` or `unless`, it will do a `@get(string)` on the rec
 
 ## Custom Messages
 
-Batman.js ships with straightforward messages for the built-in validators. However, if you need a custom message (for `Batman.I18N`, etc), there are several ways to add them.
+Batman.js ships with straightforward messages for the built-in validators. However, if you need custom messages, there are several ways to add them.
 
-1. __Pass a `message` option__. For example:
+1. __Pass a `message` option__. It may be a string or function. for example:
   ```
     @validate 'name', presence: true, message: "Please provide a name"
+    @validate 'amount', in: [1,2,3], message: -> "Amount can't be #{@get('amount}!"
   ```
   If you pass a `message` option, the `key` will not be interpolated into the message.
 1. __Use a custom validation__. In your custom validation, add the error with your custom message, for example:
