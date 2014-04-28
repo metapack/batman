@@ -11,7 +11,8 @@ class Batman.AssociatedFieldValidator extends Batman.Validator
 
       childFinished = (err, childErrors) =>
         childErrors?.forEach (validationError) ->
-          errors.add validationError.get('attribute'), validationError.get('message'), @options
+          [normalizedAttribute, normalizedMessage] = validationError.get('normalizedAttributeAndMessage')
+          errors.add normalizedAttribute, normalizedMessage, @options
         if --count == 0 then callback()
 
       if value?.forEach?

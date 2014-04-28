@@ -9,9 +9,9 @@ class Batman.NumericValidator extends Batman.Validator
     value = record.get(key)
     return callback() if @handleBlank(value)
     if !value? || !(@isNumeric(value) || @canCoerceToNumeric(value))
-      errors.add key, @format(key, 'not_numeric')
+      errors.add key, 'not_numeric'
     else if options.onlyInteger and !@isInteger(value)
-      errors.add key, @format(key, 'not_an_integer')
+      errors.add key, 'not_an_integer'
     else
       if options.greaterThan? and value <= options.greaterThan
         messageSymbol = 'greater_than'

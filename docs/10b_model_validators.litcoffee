@@ -17,12 +17,12 @@ class App.LessThanPropertyValidator extends Batman.Validator
   @triggers 'lessThanProperty'
   @options 'allowBlank'
 
-  validateEach: (errors, record, key, callback) ->
-      value = record.get(key)
-      compareKey = @options.lessThanProperty
-      otherValue = record.get(compareKey)
+  validateEach: (errors, record, attribute, callback) ->
+      value = record.get(attribute)
+      compareAttr = @options.lessThanProperty
+      otherValue = record.get(compareAttr)
       else !@handleBlank(value) && value >= otherValue
-        errors.add(key, 'must be less than #{compareKey}')
+        errors.add(attribute, 'must be less than #{compareAttr}')
       callback()
 
 Batman.Validators.push App.LessThanPropertyValidator
@@ -58,7 +58,7 @@ class App.SimpleLengthValidator extends Batman.Validator
     # has access to options.minLength, options.maxLength, options.length
     super
 
-  validateEach: (errors, record, key, callback) ->
+  validateEach: (errors, record, attribute, callback) ->
     # has access to @options.minLength, @options.maxLength, @options.length
 ```
 
@@ -77,9 +77,9 @@ The key-value pairs passed to `Batman.Model.validate` with these keys will be av
 
 Unlike `@triggers`, the presence of a key in `options` will not cause this validator to be instantiated.
 
-## ::validateEach(errors: ErrorsSet, record: Model, key: String, callback: Function)
+## ::validateEach(errors: ErrorsSet, record: Model, attribute: String, callback: Function)
 
-This method is invoked to validate `key` on `record`. If this method determines that the key is invalid, it should add a validation error to `errors`:
+This method is invoked to validate `attribute` on `record`. If this method determines that the attribute is invalid, it should add a validation error to `errors`:
 
 ```coffeescript
 errors.add("phone_number", "isn't 10 characters long")
@@ -93,16 +93,33 @@ Returns `true` if `options.allowBlank` is `true` _and_ `value` is `null`, `undef
 
 # /api/App Internals/Batman.Model/Batman.ValidationError
 
-`Batman.ValidationError`s represent a failure for a model's field to to pass validation.
-They are usually accessed by getting a model's [errors](/docs/api/batman.model.html#prototype_accessor_errors).
+`Batman.ValidationError`s represent a failure for a record's field to to pass validation.
+They are usually accessed by getting a record's [errors](/docs/api/batman.model.html#prototype_accessor_errors).
 
-## ::%fullMessage
+## ::constructor(record : Model, attribute: String, messageOrKey: String, options={}) : ValidationError
+
+Returns a new validation error for `attribute` on `record`. `messageOrKey` and `options` are used to create the error message:
+
+- if `options.message` is a string, it is used as the error's message
+- if `options.message` is a function, it is called with the record as `this`
+- if `messageOrKey` is underscore-cased, it is used to lookup an error message
+- otherwise, `messageOrKey` is used as the error's message
+
+`options.interpolations` is interpolated into error message if one is found for `messageOrKey`.
+
+## ::%fullMessage : String
 
 Returns the human-readable attribute name and the validation message:
 
     test "ValidationError should humanize attribute in the full message", ->
-      error = new Batman.ValidationError("fooBarBaz", "isn't valid")
+      class Product extends Batman.Model
+      product = new Product
+      error = new Batman.ValidationError(product, "fooBarBaz", "isn't valid")
       equal error.get('fullMessage'), "Foo bar baz isn't valid"
+
+## ::.record : Model
+
+The `Batman.Model` instance that this error belongs to.
 
 # /api/App Internals/Batman.Model/Batman.ErrorsSet
 
@@ -129,16 +146,9 @@ record.get('errors.emailAddress.first.fullMessage')
 
 Returns a new `Batman.ErrorsSet` for errors on `record`.
 
-## ::add(field : String, messageKey : String, options : Object)
+## ::add(field : String, messageOrKey : String, options : Object)
 
-Adds a new `Batman.ValidationError` on the record's attribute `field`, deriving name from `messageKey` and `options`:
-
-- if `options.message` is a string, it is used as the error's message
-- if `options.message` is a function, it is called with the record as `this`
-- if `messageKey` is underscore-cased, it is used to lookup an error message
-- otherwise, `messageKey` is used as the error's message
-
-`options.interpolations` is interpolated to error message if one is found for `messageKey`.
+Adds a new `Batman.ValidationError` on the record's attribute `field`, deriving name from `messageOrKey` and `options` as described in `Batman.ValidationError`.
 
 ## ::.record : Model
 

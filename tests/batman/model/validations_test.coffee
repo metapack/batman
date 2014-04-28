@@ -401,7 +401,7 @@ validationsTestSuite = ->
         throw err if err
         equal errors.length, 0
         p.set 'country_in_eu', true
-        p.set 'vat_number', 'SE000000000000' 
+        p.set 'vat_number', 'SE000000000000'
         p.validate (err, errors) ->
           throw err if err
           equal errors.length, 0
@@ -610,7 +610,8 @@ validationsTestSuite = ->
       # this doesn't work after i18n is enabled:
       Batman.mixin(Batman.translate.messages.errors.messages, errorMessageObject)
     catch
-      Batman.I18N.set('locales.en.errors.messages', errorMessageObject)
+      Batman.I18N.set('locales.en.errors.messages.product', errorMessageObject.product)
+
     class Product extends Batman.Model
       @resourceName: 'product'
       @validate 'name', presence: true
@@ -705,20 +706,25 @@ asyncTest "errors set contents should be bindable", 4, ->
     equal @someObject.get('productNameErrorsLength'), 1, 'the foreign key should have updated'
     QUnit.start()
 
+QUnit.module "Batman.ValidationError",
+  setup: ->
+    class Product extends Batman.Model
+    @record = new Product
+
 test "ValidationError should get full message", ->
-  error = new Batman.ValidationError("foo", "isn't valid")
+  error = new Batman.ValidationError(@record, "foo", "isn't valid")
   equal error.get('fullMessage'), "Foo isn't valid"
 
 test "ValidationError should humanize attribute in the full message", ->
-  error = new Batman.ValidationError("fooBarBaz", "isn't valid")
+  error = new Batman.ValidationError(@record, "fooBarBaz", "isn't valid")
   equal error.get('fullMessage'), "Foo bar baz isn't valid"
 
 test "ValidationError doesn't add 'base' to fullMessage", ->
-  error = new Batman.ValidationError('base', "Model isn't valid")
+  error = new Batman.ValidationError(@record, 'base', "Model isn't valid")
   equal error.get('fullMessage'), "Model isn't valid"
 
 test "ValidationError should singularize associated attribute in the full message", ->
-  error = new Batman.ValidationError("emails.address", "isn't valid")
+  error = new Batman.ValidationError(@record, "emails.address", "isn't valid")
   equal error.get('fullMessage'), "Email address isn't valid"
-  error = new Batman.ValidationError("users.emails.address", "isn't valid")
+  error = new Batman.ValidationError(@record, "users.emails.address", "isn't valid")
   equal error.get('fullMessage'), "User email address isn't valid"

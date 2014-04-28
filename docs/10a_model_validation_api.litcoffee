@@ -1,12 +1,12 @@
 # /api/App Components/Batman.Model/Batman.Model Validations
 
-Validations allow a model to be marked as `valid` or `invalid` based on a set of programmatic rules. By validating a model's data before it gets to the server, we can provide immediate feedback to the user about what they have entered and forgo waiting on a round trip to the server. `validate` allows the attachment of validations to the model on particular keys, where the validation is either a built-in one (invoked by use of options to pass to them) or a custom one (invoked by use of a custom function as the second argument).
+Validations allow a record (ie, instance of `Batman.Model`) to be marked as `valid` or `invalid` based on a set of programmatic rules. `@validate` in a model definition adds validations on a model's attributes, using either a [built-in validation](/docs/api/batman.model_validations.html#built-in_validations) or a [custom validation](/docs/api/batman.model_validations.html#custom_validation).
 
 _Note_: Validation in batman.js is always asynchronous. This is so that the API is consistent regardless of the validations used.
 
 ## Built-In Validations
 
-Built in validators are attached by calling `@validate` with options designating how to calculate the validity of the key:
+Built in validators are attached by calling `@validate` with options designating how to calculate the validity of the attribute:
 
     test '@validate accepts options to check for validity', ->
       QUnit.expect(0)
@@ -37,7 +37,7 @@ Option | Asserts that ...
 `email : true` | Value is an email address, per the [W3C HTML5 definition](http://www.w3.org/TR/html5/forms.html#valid-e-mail-ress).
 `associated : true` | Associated record is also valid. If invalid, the message will be "#{associationName} is not valid".
 `associatedFields : true` | Like `associated`, but adds error messages with the names of the fields on associated records, eg "Username must at least 10 characters" or "Favorite flavor is not included in the list".
-`confirmation : true/String` | Record's `#{key}_confirmation` value matches `#{key}`. If option is a string, use that key instead of `#{key}_confirmation`.
+`confirmation : true/String` | Record's `#{attr}_confirmation` value matches `#{attr}`. If option is a string, use that attribute instead of `#{attribute}_confirmation`.
 
 ## Custom Validation
 
@@ -45,19 +45,19 @@ You can easily define a custom validation by passing a function to `@validate`:
 
 ```coffeescript
 class App.Product extends Batman.Model
-  @validate 'name', (errors, record, key, callback) ->
+  @validate 'name', (errors, record, attribute, callback) ->
     # custom validation ...
     callback()
 ```
 
-The function takes `(errors, record, key, callback)`:
+The function takes `(errors, record, attribute, callback)`:
 
  + `errors`: the `Batman.ErrorsSet` for this record
  + `record`: the record being validated
- + `key`: the key to which the validation has been attached
+ + `attribute`: the attribute  being validated
  + `callback`: a function to call once validation has been completed. Calling this function is __mandatory__: it enables validations to be asynchronous.
 
-To show that the record is invalid, a validation function should call `errors.add(key, message)`.
+To show that the record is invalid, a validation function should call `errors.add(attribute, message)`.
 
 If you really needed to, you could also extend `Batman.Validator`.
 
@@ -69,15 +69,15 @@ Validations can be skipped by including a conditional check. Pass `if` or `unles
       QUnit.expect(0)
       class Invoice extends Batman.Model
         @resourceName: 'invoice'
-        @validate 'tax_1_rate', {presence: true, if: (errors, record, key) -> record.get('tax_1_enabled')} # tax 1 rate must be present if tax 1 is enabled
+        @validate 'tax_1_rate', {presence: true, if: (errors, record, attribute) -> record.get('tax_1_enabled')} # tax 1 rate must be present if tax 1 is enabled
         @validate 'tax_2_rate', {presence: true, if: 'tax_2_rate'} # passing a string will look for an attribute or accessor with that name on the record
         @validate 'discount_rate', {presence: true, unless: 'discount_disabled'} # discount rate must be present unless discount is disabled
 
-If you pass a string as `if` or `unless`, it will do a `@get(string)` on the record being validated. If you pass a function, it should have the signature `(errors, record, key)`:
+If you pass a string as `if` or `unless`, it will do a `@get(string)` on the record being validated. If you pass a function, it should have the signature `(errors, record, attribute)`:
 
 - `errors`: the `Batman.ErrorsSet` for the record
 - `record`: the record being validated
-- `key`: the key to which the validation has been attached
+- `attribute`: the attribute being validated
 
 ## Custom Messages
 
@@ -88,12 +88,12 @@ Batman.js ships with straightforward messages for the built-in validators. Howev
     @validate 'name', presence: true, message: "Please provide a name"
     @validate 'amount', in: [1,2,3], message: -> "Amount can't be #{@get('amount}!"
   ```
-  If you pass a `message` option, the `key` will not be interpolated into the message.
+  If you pass a `message` option, the `attribute` will not be interpolated into the message.
 1. __Use a custom validation__. In your custom validation, add the error with your custom message, for example:
   ```coffeescript
     errors.add("email_address", "must be provided to ensure that your password isn't lost!")
   ```
-1. __Provide a custom translation__. In your locale, `errors.messages.#{key}` should match the structure provided by batman.js ([see source](https://github.com/batmanjs/batman/blob/master/src/model/validations/validators.coffee)).
+1. __Provide a custom translation__. In your locale, `errors.messages.#{attribute}` should match the structure provided by batman.js ([see source](https://github.com/batmanjs/batman/blob/master/src/model/validations/validators.coffee)).
 1. __Provide model-specific messages__. Batman.js will look up:
   ```coffeescript
     "errors.messages.#{resourceName}.#{fieldName}.#{errorKey}"
